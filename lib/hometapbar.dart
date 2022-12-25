@@ -49,32 +49,34 @@ class _HomeTabBodyState extends State<HomeTabBody>
         ],
       ),
       bottomNavigationBar: Container(
-        color: Colors.indigo,
-        height: 55,
+        color: Colors.black,
+        height: 70,
         child: TabBar(
-          labelColor: Colors.purple,
-          indicatorColor: Colors.pink,
-          unselectedLabelColor: Colors.amber,
+          labelColor: Colors.yellow,
+          indicatorColor: Colors.yellow,
+          unselectedLabelColor: Colors.indigo,
           controller: tabController,
           tabs: const [
             Tab(
               icon: Icon(
-                Icons.looks_one,
+                Icons.info,
                 //  color: Colors.amber,
               ),
-              text: 'one',
+              text: 'Info',
             ),
             Tab(
               icon: Icon(
                 Icons.home,
                 //color: Colors.blueAccent,
               ),
+              text: 'Main',
             ),
             Tab(
               icon: Icon(
-                Icons.looks_two,
-                color: Colors.red,
+                Icons.shop_2_outlined,
+                //  color: Colors.red,
               ),
+              text: 'Shop',
             )
           ],
         ),

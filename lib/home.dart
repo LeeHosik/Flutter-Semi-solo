@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:solo_game_project/hometapbar.dart';
+import 'package:solo_game_project/notice/notice.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -58,10 +59,10 @@ class _HomeBodyState extends State<HomeBody> {
                 height: MHeight * 0.1,
                 child: ElevatedButton(
                   onPressed: () {
-                    print('Clicked Support Card');
+                    Get.toNamed('/Guild_main');
                   },
                   child: const Text(
-                    'Support Item',
+                    'Guild',
                   ),
                 ),
               ),
@@ -76,7 +77,6 @@ class _HomeBodyState extends State<HomeBody> {
                 height: MHeight * 0.1,
                 child: ElevatedButton(
                   onPressed: () {
-                    print('Clicked Move Dungeon');
                     Get.toNamed('/Gate_Dungeon');
                   },
                   child: const Text(
@@ -95,10 +95,10 @@ class _HomeBodyState extends State<HomeBody> {
                 height: MHeight * 0.1,
                 child: ElevatedButton(
                   onPressed: () {
-                    print('Check Event');
+                    ClickedNotice();
                   },
                   child: const Text(
-                    'Check Event',
+                    'Notice',
                   ),
                 ),
               ),
@@ -111,4 +111,23 @@ class _HomeBodyState extends State<HomeBody> {
       ),
     );
   }
-}
+
+  // ------------- Function -------------
+  // 2022-12-24 Hosik
+  ClickedNotice() {
+    showDialog(
+      context: context,
+
+      barrierDismissible: true, // 바깥 영역 터치시 닫을지 여부
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.9,
+            height: MediaQuery.of(context).size.height * 0.7,
+            child: const Notice_main(),
+          ),
+        );
+      },
+    );
+  }
+}// END
