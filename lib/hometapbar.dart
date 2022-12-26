@@ -40,6 +40,7 @@ class _HomeTabBodyState extends State<HomeTabBody>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // appBar: AppBar(title: Text('test')),
       body: TabBarView(
         controller: tabController,
         children: const [

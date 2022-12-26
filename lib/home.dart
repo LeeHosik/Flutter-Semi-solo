@@ -20,6 +20,13 @@ class HomeBody extends StatefulWidget {
 }
 
 class _HomeBodyState extends State<HomeBody> {
+  late String character;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     double MHeight = MediaQuery.of(context).size.height;
@@ -27,11 +34,7 @@ class _HomeBodyState extends State<HomeBody> {
     return Scaffold(
       backgroundColor: Colors.black,
       //appBar: AppBar(title: const Text('Home')),
-      body:
-          // Center(
-          //   child: Column(
-          //     children: [
-          Stack(
+      body: Stack(
         children: [
           Image.network(
             'https://p4.wallpaperbetter.com/wallpaper/748/498/513/sky-mountains-portrait-display-night-wallpaper-preview.jpg',
@@ -99,6 +102,24 @@ class _HomeBodyState extends State<HomeBody> {
                   },
                   child: const Text(
                     'Notice',
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: (MHeight - 55) * 0.5,
+            left: Mwidth * 0.705,
+            child: SizedBox(
+              child: SizedBox(
+                width: Mwidth * 0.25,
+                height: MHeight * 0.05,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Get.toNamed('/makeCharHome');
+                  },
+                  child: const Text(
+                    '임시 캐릭터 생성 창 ',
                   ),
                 ),
               ),

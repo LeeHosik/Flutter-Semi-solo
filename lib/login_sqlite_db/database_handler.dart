@@ -27,25 +27,25 @@ class DatabaseHandler {
     return result;
   } // insertStudents END
 
-  Future<int> insertuser_Info(user_Info user_Info) async {
-    int result = 0;
+  // Future<int> insertuser_Info(user_Info user_Info) async {
+  //   int result = 0;
 
-    final Database db = await initializeDB();
-    print("insertStudents Database's DB $db");
-    result = await db.rawInsert(
-        'insert into student (UID, user_id, user_pw) value (?,?,?)', [
-      user_Info.UID,
-      user_Info.user_id,
-      user_Info.user_pw,
-    ]);
-    return result;
-  } // insertStudents END
+  //   final Database db = await initializeDB();
+  //   print("insertStudents Database's DB $db");
+  //   result = await db.rawInsert(
+  //       'insert into student (UID, user_id, user_pw) value (?,?,?)', [
+  //     user_Info.UID,
+  //     user_Info.user_id,
+  //     user_Info.user_pw,
+  //   ]);
+  //   return result;
+  // } // insertStudents END
 
-  Future<List<user_Info>> queryStudents() async {
-    final Database db = await initializeDB();
-    final List<Map<String, Object?>> queryResult =
-        await db.rawQuery('select * from user_Info');
-    return queryResult.map((e) => user_Info.fromMap(e)).toList();
-  } // queryStudent END
+  // Future<List<user_Info>> queryStudents() async {
+  //   final Database db = await initializeDB();
+  //   final List<Map<String, Object?>> queryResult =
+  //       await db.rawQuery('select * from user_Info');
+  //   return queryResult.map((e) => user_Info.fromMap(e)).toList();
+  // } // queryStudent END
 
 } // DatabaseHandler END
