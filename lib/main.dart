@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:solo_game_project/Login/Start.dart';
+import 'package:solo_game_project/SignUp/signUp.dart';
 
 import 'package:solo_game_project/dungeonMain/gate_dungeon.dart';
 import 'package:solo_game_project/guild/guild_main.dart';
@@ -44,6 +45,11 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/Guild_main',
           page: () => const Guild_main(),
+        ),
+        GetPage(
+          // 회원가입
+          name: '/singUp',
+          page: () => const singUp(),
         ),
         GetPage(
           // 나중에 없앨수도 있는녀석 여기서 말고 로그인 하고 난 뒤에 계정정보가 없으면 바로 넘어가도록 하고

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 
 class singUp extends StatelessWidget {
   const singUp({super.key});
@@ -23,6 +23,10 @@ class _singUpBodyState extends State<singUpBody> {
   late TextEditingController inputsignUpUserPw;
   late TextEditingController inputsignUpUserEmail;
 
+  late String singUpId;
+  late String singUpPw;
+  late String singUpEmail;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -37,6 +41,7 @@ class _singUpBodyState extends State<singUpBody> {
     return Scaffold(
       body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
               'Sing Up',
@@ -47,13 +52,15 @@ class _singUpBodyState extends State<singUpBody> {
               decoration: const InputDecoration(
                 hintText: 'Plz Input your ID',
               ),
+              textInputAction: TextInputAction.go,
             ),
             TextField(
-              controller: inputsignUpUserId,
+              controller: inputsignUpUserPw,
               keyboardType: TextInputType.text,
               decoration: const InputDecoration(
                 hintText: 'Plz Input your ID',
               ),
+              textInputAction: TextInputAction.go,
             ),
             TextField(
               controller: inputsignUpUserEmail,
@@ -61,10 +68,14 @@ class _singUpBodyState extends State<singUpBody> {
               decoration: const InputDecoration(
                 hintText: 'Plz Input your E-mail',
               ),
+              textInputAction: TextInputAction.go,
             ),
             ElevatedButton(
               onPressed: () {
-                //-- sing up button
+                singUpId = inputsignUpUserId.text.trim();
+                singUpPw = inputsignUpUserPw.text.trim();
+                singUpEmail = inputsignUpUserEmail.text.trim();
+                getJsonDataSignUp(singUpId, singUpPw, singUpEmail);
               },
               child: const Text(
                 'Sing Up!',
@@ -75,4 +86,42 @@ class _singUpBodyState extends State<singUpBody> {
       ),
     );
   }
-}
+  // ----------- Function -------------
+
+  Future getJsonDataSignUp(
+      String inputId, String inputPw, String inputEmail) async {
+    var url = Uri.parse(
+        'http://localhost:8080/Flutter/soloGP/SignUp/signUp.jsp?inputId=$inputId&inputPw=$inputPw&inputEmail=$inputEmail');
+
+    var response = await http.get(url);
+    _showDialog(context);
+    return true;
+  } // getJsonDatamakeChar END
+
+  _showDialog(context) {
+    // 캐릭터 생성 성공, 게임 메인으로 넘어가기
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text(
+              '회원가입 완료!',
+            ),
+            content: const Text('complete'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Get.back();
+                  //Get.toNamed('/tabbar');
+                },
+                child: const Text(
+                  'OK',
+                ),
+              ),
+            ],
+          );
+        });
+  }
+  // ----------- Function END -------------
+}// END

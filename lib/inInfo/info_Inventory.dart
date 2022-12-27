@@ -30,7 +30,15 @@ class _InfoInventoryBodyState extends State<InfoInventoryBody> {
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
           ),
-          Stack(),
+          // Stack(     인벤토리 아이템 리스트뷰로 찍을것
+          //   children: [
+          //     Positioned(
+          //       child: ListView.builder(
+          //         itemBuilder: const Text('test'),
+          //       ),
+          //     )
+          //   ],
+          // ),
         ],
       ),
     );

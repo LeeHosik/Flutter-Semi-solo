@@ -42,6 +42,7 @@ dependencies:
   shared_preferences: ^2.0.15
   sqflite: ^2.2.2
   horizontal_card_pager: ^1.1.1
+  webview_flutter: ^4.0.1
 
 dev_dependencies:
   flutter_test:

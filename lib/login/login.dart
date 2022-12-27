@@ -24,6 +24,8 @@ class Login_page extends StatefulWidget {
 
 class _Login_pageState extends State<Login_page> {
   late List data;
+  late String sendSeq;
+  late String charImg;
   late TextEditingController user_id;
   late TextEditingController user_pw;
   // late var sucess;
@@ -32,6 +34,7 @@ class _Login_pageState extends State<Login_page> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    charImg = "";
     data = [];
     user_id = TextEditingController();
     user_pw = TextEditingController();
@@ -51,6 +54,7 @@ class _Login_pageState extends State<Login_page> {
               decoration: const InputDecoration(
                 hintText: 'Plz Input your ID',
               ),
+              textInputAction: TextInputAction.go,
             ),
             TextField(
               controller: user_pw,
@@ -58,13 +62,14 @@ class _Login_pageState extends State<Login_page> {
               decoration: const InputDecoration(
                 hintText: 'Plz Input your PW',
               ),
+              textInputAction: TextInputAction.go,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    //-- LOgin chk FUnction
+                    Get.toNamed('/singUp');
                   },
                   child: const Text('회원가입 하러 가기'),
                 ),
@@ -77,16 +82,6 @@ class _Login_pageState extends State<Login_page> {
                       user_id.text.trim(),
                       user_pw.text.trim(),
                     );
-                    // print('sucess $sucess');
-                    // if (sucess == 'ok') {
-                    //   Get.back();
-                    //   Get.toNamed('/tabbar');
-                    //   print('ok');
-                    //   //suceess login
-
-                    // } else {
-                    //   //fail login error
-                    // }
                   },
                   child: const Text('Login!'),
                 ),
@@ -111,7 +106,7 @@ class _Login_pageState extends State<Login_page> {
 
   Future getJsonDataLoginChk(final input_user_id, final input_user_pw) async {
     var url = Uri.parse(
-        'http://localhost:8080/Flutter/soloGP/login_chk_query.jsp?user_id=$input_user_id&user_pw=$input_user_pw');
+        'http://localhost:8080/Flutter/soloGP/Login/login_chk_query.jsp?user_id=$input_user_id&user_pw=$input_user_pw');
 
     var response = await http.get(url);
 
@@ -122,16 +117,22 @@ class _Login_pageState extends State<Login_page> {
       ),
     );
 
+    print(response.body);
     List result = dateConvertedJSON['results'];
     setState(() {
       data.addAll(result);
     });
 
     if (data.isNotEmpty) {
+      String sendSeq = data[0]['user_seq'];
+      login_static.static_charUID = data[0]['char_UID'];
+
       Get.back();
       Get.back();
-      Get.toNamed('/tabbar');
-      login_static.static_user_id = data[0]['user_seq'];
+      Get.toNamed(
+        '/tabbar',
+        arguments: data[0]['user_seq'],
+      );
 
       //suceess login
 
@@ -142,6 +143,7 @@ class _Login_pageState extends State<Login_page> {
   } // getJsonDataLoginChk END
 
   _loginFail(BuildContext context) {
+    // 로그인 실패시
     showDialog(
       context: context,
       barrierDismissible: false, // user must tap the button!
@@ -159,13 +161,14 @@ class _Login_pageState extends State<Login_page> {
       },
     );
   } // _showDialog END
+
   // --------------------Function END--------------------
 
 // ****************임시 테스트 위한 로그인 한뒤 캐릭생성 바로 가는 펑션 지울 예정 ************************
 
   Future testFunctionDesu(final input_user_id, final input_user_pw) async {
     var url = Uri.parse(
-        'http://localhost:8080/Flutter/soloGP/login_chk_query.jsp?user_id=$input_user_id&user_pw=$input_user_pw');
+        'http://localhost:8080/Flutter/soloGP/Login/login_chk_query.jsp?user_id=$input_user_id&user_pw=$input_user_pw');
 
     var response = await http.get(url);
 
@@ -180,10 +183,9 @@ class _Login_pageState extends State<Login_page> {
     setState(() {
       data.addAll(result);
     });
-    print('로그인 성공');
-    print(' 요거는 data[0][user_seq] 임 ${data[0]['user_seq']}');
+
     if (data.isNotEmpty) {
-      login_static.static_user_seq = data[0]['user_seq'];
+      login_static.static_user_seq = data[0];
       print('스태틱에 들어간 유저 아이디 ${login_static.static_user_seq}');
       Get.back();
       Get.back();

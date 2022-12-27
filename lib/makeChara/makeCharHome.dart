@@ -184,15 +184,34 @@ class _makeCharHomeBodyState extends State<makeCharHomeBody> {
   }
 
   Future getJsonDatamakeChar(String charName, int charNum) async {
-    print(charName);
-    print(charNum);
-    print(user_seq);
     var url = Uri.parse(
-        'http://localhost:8080/Flutter/soloGP/makeChar_insert.jsp?charName=$charName&charNum=$charNum&user_seq=$user_seq');
+        'http://localhost:8080/Flutter/soloGP/MakeCharac/makeChar_insert.jsp?charName=$charName&charNum=$charNum&user_seq=$user_seq');
 
     var response = await http.get(url);
+    _showDialog(context);
     return true;
   } // getJsonDatamakeChar END
 
+  _showDialog(context) {
+    // 캐릭터 생성 성공, 게임 메인으로 넘어가기
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text(
+              '캐릭터 생성완료',
+            ),
+            content: const Text('complete'),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    Get.toNamed('/tabbar');
+                  },
+                  child: const Text('OK')),
+            ],
+          );
+        });
+  }
   // ----------------- Function END -----------------
 } // END

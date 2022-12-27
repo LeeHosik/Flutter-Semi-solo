@@ -20,7 +20,16 @@ class _ShopBodyState extends State<ShopBody> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Shop ')),
+      appBar: AppBar(
+        title: const Text(
+          'Shop ',
+        ),
+      ),
+      body: Center(
+        child: const Text(
+          '준비중',
+        ),
+      ),
     );
   }
 }
