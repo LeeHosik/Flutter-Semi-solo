@@ -4,9 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:horizontal_card_pager/card_item.dart';
 import 'package:horizontal_card_pager/horizontal_card_pager.dart';
-import 'package:solo_game_project/login/login_static.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:solo_game_project/home.dart';
+import 'package:solo_game_project/login/static_user.dart';
 import 'package:solo_game_project/makeChara/makeCharInfoClass.dart';
 import 'package:http/http.dart' as http;
+import 'package:solo_game_project/makeChara/tutorial.dart';
 
 class makeCharHome extends StatelessWidget {
   const makeCharHome({super.key});
@@ -29,16 +32,21 @@ class _makeCharHomeBodyState extends State<makeCharHomeBody> {
   late List<CardItem> imgitems;
   late TextEditingController charName;
   late int charNum;
-  late String user_seq;
+  late String userSeq;
   late String inputChrName;
+  late List data;
+  late String user_chrUID;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    data = [];
     charName = TextEditingController();
     imgitems = makeCharList.imgitems;
-    user_seq = login_static.static_user_seq;
+    userSeq = "";
+    user_chrUID = '';
+    _initSharedPreferences();
     charNum = 2;
 
     img =
@@ -123,6 +131,7 @@ class _makeCharHomeBodyState extends State<makeCharHomeBody> {
                         CheckIDisEmpty();
                       } else {
                         inputChrName = charName.text.trim();
+
                         getJsonDatamakeChar(inputChrName, charNum);
                       }
 
@@ -142,6 +151,15 @@ class _makeCharHomeBodyState extends State<makeCharHomeBody> {
   }
 
   // ----------------- Function -----------------
+
+  _initSharedPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userSeq = (prefs.getString('userSeq'))!;
+      prefs.setString('user_chrUID', user_chrUID);
+    });
+  } //  _initSharedPreferences END
+
   // 2022-12-26 Hosik
   changeImg(value) {
     if (value >= 3) {
@@ -183,10 +201,43 @@ class _makeCharHomeBodyState extends State<makeCharHomeBody> {
     );
   }
 
+  //////
+  Future getJsonDataMakeChr_GetUID() async {
+    var url = Uri.parse(
+        'http://localhost:8080/Flutter/soloGP/Tutorial/makeUserChrUID.jsp?user_seq=$userSeq');
+// 만든 캐릭터가 얻은 Chr_UID 값 찾아서 static에 저장
+    var response = await http.get(url);
+
+    data.clear();
+    var dateConvertedJSON = json.decode(
+      utf8.decode(
+        response.bodyBytes,
+      ),
+    );
+
+    List result = dateConvertedJSON['results'];
+    data.addAll(result);
+    print(data[0]['Chr_UID']);
+    user_chrUID = data[0]['Chr_UID'];
+    user_static.staticUser_chrUID = user_chrUID;
+    if (data.isNotEmpty) {
+      //getJsonDatamakeChar(inputChrName, charNum);
+      Get.to(
+        const Tutorial(),
+      );
+    } else {
+      // _loginFail(context);
+      print('좆됬따. 만든 캐릭터의 UID 값을 못가져 오고 있다 ');
+    }
+    return true;
+  } // getJsonDataLoginChk END
+
+  /////
+
   Future getJsonDatamakeChar(String charName, int charNum) async {
     var url = Uri.parse(
-        'http://localhost:8080/Flutter/soloGP/MakeCharac/makeChar_insert.jsp?charName=$charName&charNum=$charNum&user_seq=$user_seq');
-
+        'http://localhost:8080/Flutter/soloGP/MakeCharac/makeChar_insert.jsp?charName=$charName&charNum=$charNum&user_seq=$userSeq');
+// 캐릭터 만들고 듀토리얼 끝나고 캐릭 생성
     var response = await http.get(url);
     _showDialog(context);
     return true;
@@ -201,17 +252,21 @@ class _makeCharHomeBodyState extends State<makeCharHomeBody> {
             title: const Text(
               '캐릭터 생성완료',
             ),
-            content: const Text('complete'),
+            content: const Text('듀토리얼로 넘어가요~'),
             actions: [
               TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    Get.toNamed('/tabbar');
-                  },
-                  child: const Text('OK')),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  getJsonDataMakeChr_GetUID();
+                },
+                child: const Text(
+                  'OK',
+                ),
+              ),
             ],
           );
         });
-  }
+  } //_showDialog END
+
   // ----------------- Function END -----------------
 } // END

@@ -1,14 +1,22 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:solo_game_project/Login/Start.dart';
 import 'package:solo_game_project/SignUp/signUp.dart';
 
 import 'package:solo_game_project/dungeonMain/gate_dungeon.dart';
+import 'package:solo_game_project/firebase_options.dart';
 import 'package:solo_game_project/guild/guild_main.dart';
 import 'package:solo_game_project/hometapbar.dart';
 import 'package:solo_game_project/makeChara/makeCharHome.dart';
 
-void main() {
+void main() async {
+  // ******************************************** firebase ********************************************
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  // ******************************************** firebase ********************************************
   runApp(const MyApp());
 }
 

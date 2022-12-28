@@ -1,8 +1,11 @@
 import 'package:path/path.dart';
 import 'package:solo_game_project/Card/CardSQLite/Model/sqlite_card_model.dart';
+import 'package:solo_game_project/login/static_user.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DatabaseHandler {
+  String user_chrUID = user_static.staticUser_chrUID;
+
   // Dao랑 비슷하다고 보면 된다.
   Future<Database> initializeDB() async {
     String path = await getDatabasesPath();
@@ -11,7 +14,7 @@ class DatabaseHandler {
       onCreate: (database, version) async {
         await database.execute(
           // sup_table_group 은 추후 덱을 여러개 만들 수 있게 업데이트 할때 사용할 덱넘버
-          "create table EquipCard(sup_seq integer primary key , sup_name text, sup_category text, sup_grade text, sup_card_img text , sup_table_group text)",
+          "create table EquipCard(sup_seq integer primary key autoincrement ,sup_decknum text, sup_name text, sup_category text, sup_grade text, sup_card_img text , sup_table_group text, user_chrUID text)",
         );
       },
       version: 1,
@@ -22,13 +25,13 @@ class DatabaseHandler {
     int result = 0;
     final Database db = await initializeDB();
     result = await db.rawUpdate(
-        'update EquipCard set sup_name = ?, sup_category = ?, sup_grade = ?, sup_card_img = ? where sup_seq = ?',
+        'update EquipCard set sup_name = ?, sup_category = ?, sup_grade = ?, sup_card_img = ? where sup_decknum = ? and user_chrUID = $user_chrUID',
         [
           SupportCard.sup_name,
           SupportCard.sup_category,
           SupportCard.sup_grade,
           SupportCard.sup_card_img,
-          SupportCard.sup_seq,
+          SupportCard.sup_decknum
         ]);
 
     return result;
@@ -37,16 +40,17 @@ class DatabaseHandler {
 // default 'https://mblogthumb-phinf.pstatic.net/MjAyMDAzMTNfMjMw/MDAxNTg0MDMyMzAzMDU0.FsCYZc2DasH1M9PUdxAkTGVHV2_OtHHCGUh6Ojdk7Fog.Sb-5R2ciDEGMUlUC9vSGP5q9hXvsADSY6avDjxx2H-0g.PNG.lds5209/image.png?type=w800'
 // ------
   Future<int> insertFirstUserCardDeck1() async {
+    print('insertFirstUserCardDeck1에서 받아온 $user_chrUID');
     int result = 0;
     final Database db = await initializeDB();
     result = await db.rawInsert(
-      'insert into EquipCard(sup_seq, sup_name, sup_category, sup_grade, sup_card_img) values(?,?, ?, ?, ?)',
+      "insert into EquipCard(sup_decknum, sup_name, sup_category, sup_grade, sup_card_img, user_chrUID) values(?,?, ?, ?, ?,'$user_chrUID')",
       [
-        '1',
+        '0',
         '메지로 아르당',
         '공격',
         'R',
-        'https://gametora.com/images/umamusume/supports/tex_support_card_10069.png'
+        'https://gametora.com/images/umamusume/supports/tex_support_card_10069.png',
       ],
     );
 
@@ -57,9 +61,9 @@ class DatabaseHandler {
     int result = 0;
     final Database db = await initializeDB();
     result = await db.rawInsert(
-      'insert into EquipCard(sup_seq,sup_name, sup_category, sup_grade, sup_card_img) values(?,?, ?, ?, ?)',
+      "insert into EquipCard(sup_decknum, sup_name, sup_category, sup_grade, sup_card_img, user_chrUID) values(?,?, ?, ?, ?,'$user_chrUID')",
       [
-        '2',
+        '1',
         '토도',
         '방어',
         'R',
@@ -74,9 +78,9 @@ class DatabaseHandler {
     int result = 0;
     final Database db = await initializeDB();
     result = await db.rawInsert(
-      'insert into EquipCard(sup_seq,sup_name, sup_category, sup_grade, sup_card_img) values(?,?, ?, ?, ?)',
+      "insert into EquipCard(sup_decknum, sup_name, sup_category, sup_grade, sup_card_img, user_chrUID) values(?,?, ?, ?, ?,'$user_chrUID')",
       [
-        '3',
+        '2',
         '오구리 캡',
         '유틸',
         'R',
@@ -90,9 +94,9 @@ class DatabaseHandler {
     int result = 0;
     final Database db = await initializeDB();
     result = await db.rawInsert(
-      'insert into EquipCard(sup_seq, sup_name, sup_category, sup_grade, sup_card_img) values(?,?, ?, ?, ?)',
+      "insert into EquipCard(sup_decknum, sup_name, sup_category, sup_grade, sup_card_img, user_chrUID) values(?,?, ?, ?, ?,'$user_chrUID')",
       [
-        '4',
+        '3',
         '이쿠노 딕터스',
         '공격',
         'R',
@@ -120,10 +124,11 @@ class DatabaseHandler {
 
   Future<List<SupportCard>> queryUserCardDeck() async {
     // DB 설정하기
+
     final Database db = await initializeDB();
     // KEY를 가지고와서 사용해야함.
-    final List<Map<String, Object?>> queryResult =
-        await db.rawQuery('select * from EquipCard');
+    final List<Map<String, Object?>> queryResult = await db
+        .rawQuery('select * from EquipCard where user_chrUID = $user_chrUID');
     return queryResult.map((e) => SupportCard.formMap(e)).toList();
   }
 

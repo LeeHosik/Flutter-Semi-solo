@@ -3,9 +3,10 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:solo_game_project/Login/login.dart';
+import 'package:solo_game_project/SignUp/signUp.dart';
 import 'package:solo_game_project/hometapbar.dart';
-import 'package:solo_game_project/login/login_sqlite_db/database_handler.dart';
-import 'package:solo_game_project/login/login_sqlite_db/user_info.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:solo_game_project/login/google_login.dart';
 
 class GameStart extends StatelessWidget {
   const GameStart({super.key});
@@ -24,6 +25,18 @@ class StartBody extends StatefulWidget {
 }
 
 class _StartBodyState extends State<StartBody> {
+  // @override
+  // void initState() {
+  //   // TODO: implement initState
+  //   super.initState();
+  //   GoogleSignIn _googleSignIn = GoogleSignIn(
+  //     scopes: [
+  //       'email',
+  //       'https://www.googleapis.com/auth/contacts.readonly',
+  //     ],
+  //   );
+  // }
+
   @override
   Widget build(BuildContext context) {
     // double MHeight = MediaQuery.of(context).size.height;
@@ -34,19 +47,33 @@ class _StartBodyState extends State<StartBody> {
           'Start PAge',
         ),
       ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: () => GotoLogin(),
-                child: const Text(
-                  'Go to Login',
-                ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () => GotoLogin(),
+              child: const Text(
+                'Go to Login',
               ),
-            ],
-          ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Get.to(
+                  const singUp(),
+                );
+              },
+              child: const Text(
+                'Go to Sign Up',
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () => Get.to(SignInDemo()),
+              child: Text(
+                'google',
+              ),
+            ),
+          ],
         ),
       ),
     );

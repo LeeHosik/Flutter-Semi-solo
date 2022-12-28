@@ -2,11 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:solo_game_project/Card/CardSQLite/Model/CardSQLite.dart';
 import 'package:solo_game_project/Card/CardSQLite/Model/sqlite_card_model.dart';
 import 'package:solo_game_project/Card/static_card.dart';
-import 'package:solo_game_project/login/login_static.dart';
 import 'package:http/http.dart' as http;
+import 'package:solo_game_project/login/static_user.dart';
 
 class haveCardList extends StatefulWidget {
   haveCardList({super.key});
@@ -28,7 +29,7 @@ class _haveCardListState extends State<haveCardList> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    ChrUID = login_static.static_charUID;
+
     CardCategory = card_static.card_category;
     data = [];
     detailData = [];
@@ -46,6 +47,9 @@ class _haveCardListState extends State<haveCardList> {
         staticHelp = card_static.used_card_one;
         break;
     }
+    ChrUID = "";
+    _initSharedPreferences();
+
     handler = DatabaseHandler();
     handler.initializeDB().whenComplete(() async {
       setState(() {
@@ -53,7 +57,7 @@ class _haveCardListState extends State<haveCardList> {
       });
     });
 
-    getJsonDatahaveCardList(ChrUID, CardCategory);
+    // getJsonDatahaveCardList(ChrUID, CardCategory);
   }
 
   // 아이디로 가지고 있는 카드 리스트 불러오기
@@ -84,12 +88,13 @@ class _haveCardListState extends State<haveCardList> {
             children: [
               GestureDetector(
                 onTap: () {
-                  int justInputSupSeq = int.parse(data[index]['sup_seq']);
-
+                  // int justInputSupSeq = int.parse(data[index]['sup_seq']);
+                  // print(user_static.staticUser_chrUID);
                   handler.updateUserCardDeck(
                     SupportCard(
-                      sup_seq: card_static.cardDeckCategory,
+                      // sup_seq: card_static.cardDeckCategory,
                       sup_name: data[index]['sup_Name'],
+                      sup_decknum: SupportCard.static_sup_deck_index,
                       sup_category: data[index]['sup_category'],
                       sup_grade: data[index]['sup_grade'],
                       sup_card_img: data[index]['sup_card_img'],
@@ -133,12 +138,26 @@ class _haveCardListState extends State<haveCardList> {
   } // cardBuild END
 
   // ----------------------- Function -----------------------
-  // 2022-12-27 Hosik
+//2022-12-28 Hosik SharedPreferences
+  _initSharedPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    print('이거 제대로 돠고 있는거 맞으 ㅁ/ ${prefs.getString('user_chrUID')!}');
+    // setState(() {
+    ChrUID = (prefs.getString('user_chrUID'))!;
+    // userPw = (prefs.getString('WPSRESU'))!;
+    // });
+    print('<<<<<<>>>>>><<<<<<<<');
+    print('_initSharedPReferences Function in => $ChrUID');
+    getJsonDatahaveCardList(ChrUID, CardCategory);
+  } //  _initSharedPreferences END
 
+  // 2022-12-27 Hosik
   Future getJsonDatahaveCardList(String ChrUIDs, String CardCategory) async {
     String getChrUID = ChrUIDs;
     String getCategory = CardCategory;
 
+    print('getChrUID => $getChrUID');
+    print('getCategory => $getCategory');
     var url = Uri.parse(
         'http://localhost:8080/Flutter/soloGP/Card/haveCard_list.jsp?ChrUID=$getChrUID&category=$getCategory');
 
@@ -199,47 +218,53 @@ class _haveCardListState extends State<haveCardList> {
           content: SizedBox(
             width: MediaQuery.of(context).size.width * 0.7,
             height: MediaQuery.of(context).size.height * 0.7,
-            child: Center(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Image.network(detailData[0]['sup_card_img']),
-                    Text(detailData[0]['sup_category']),
-                    Text(detailData[0]['sup_grade']),
-                    Text(detailData[0]['sup_card_info']),
-                    Text(detailData[0]['sup_Name']),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('Attact : ${detailData[0]['sup_ability_Attack']}'),
-                        SizedBox(
-                          width: mq.size.width * 0.03,
-                        ),
-                        Text(
-                            'Defense : ${detailData[0]['sup_ability_Defense']}'),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('HP : ${detailData[0]['sup_ability_Hp']}'),
-                        SizedBox(
-                          width: mq.size.width * 0.03,
-                        ),
-                        Text('MP : ${detailData[0]['sup_ability_Mp']}'),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('Util 1 : ${detailData[0]['sup_ability_Util_1']}'),
-                        SizedBox(
-                          width: mq.size.width * 0.03,
-                        ),
-                        Text('Util 2 : ${detailData[0]['sup_ability_Util_2']}'),
-                      ],
-                    ),
-                  ],
+            child: GestureDetector(
+              onTap: () => Navigator.of(context).pop(),
+              child: Center(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Image.network(detailData[0]['sup_card_img']),
+                      Text(detailData[0]['sup_category']),
+                      Text(detailData[0]['sup_grade']),
+                      Text(detailData[0]['sup_card_info']),
+                      Text(detailData[0]['sup_Name']),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                              'Attact : ${detailData[0]['sup_ability_Attack']}'),
+                          SizedBox(
+                            width: mq.size.width * 0.03,
+                          ),
+                          Text(
+                              'Defense : ${detailData[0]['sup_ability_Defense']}'),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('HP : ${detailData[0]['sup_ability_Hp']}'),
+                          SizedBox(
+                            width: mq.size.width * 0.03,
+                          ),
+                          Text('MP : ${detailData[0]['sup_ability_Mp']}'),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                              'Util 1 : ${detailData[0]['sup_ability_Util_1']}'),
+                          SizedBox(
+                            width: mq.size.width * 0.03,
+                          ),
+                          Text(
+                              'Util 2 : ${detailData[0]['sup_ability_Util_2']}'),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

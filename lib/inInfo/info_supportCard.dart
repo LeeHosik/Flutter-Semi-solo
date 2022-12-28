@@ -5,7 +5,6 @@ import 'package:solo_game_project/Card/CardSQLite/Model/CardSQLite.dart';
 import 'package:solo_game_project/Card/CardSQLite/Model/sqlite_card_model.dart';
 import 'package:solo_game_project/Card/haveCardList.dart';
 import 'package:solo_game_project/Card/static_card.dart';
-import 'package:flutter_lorem/flutter_lorem.dart';
 
 class InfoSupportCard extends StatelessWidget {
   const InfoSupportCard({super.key});
@@ -36,7 +35,7 @@ class _InfoSupportCardBodyState extends State<InfoSupportCardBody> {
         //handler.queryUserCardDeck();
       });
     });
-    chkFirstDeck();
+    // chkFirstDeck();
   }
 
   @override
@@ -81,6 +80,8 @@ class _InfoSupportCardBodyState extends State<InfoSupportCardBody> {
                           child: GestureDetector(
                             onTap: () {
                               // SelectCardList(index + 1);
+                              SupportCard.static_sup_deck_index =
+                                  index.toString();
                               SelectCardList(index + 1).then(
                                 (value) {
                                   setState(() {
@@ -189,23 +190,23 @@ class _InfoSupportCardBodyState extends State<InfoSupportCardBody> {
     });
   } // SelectCardList END
 
-  Future<bool> chkFirstDeck() async {
-    List<SupportCard> chkFirstDeck = await handler.queryUserCardDeck();
+  // Future<bool> chkFirstDeck() async {
+  //   List<SupportCard> chkFirstDeck = await handler.queryUserCardDeck();
 
-    if (chkFirstDeck.isEmpty) {
-      print('have not DATA');
-      handler.insertFirstUserCardDeck1();
-      handler.insertFirstUserCardDeck2();
-      handler.insertFirstUserCardDeck3();
-      handler.insertFirstUserCardDeck4();
-    }
-    // else {
-    //   print(
-    //       'info_supportCard.dart 에서 카드 리스트 불러올때 카드가 있다면 나오는 곳 chkFirstDeck Function');
+  //   if (chkFirstDeck.isEmpty) {
+  //     print('have not DATA');
+  //     handler.insertFirstUserCardDeck1();
+  //     handler.insertFirstUserCardDeck2();
+  //     handler.insertFirstUserCardDeck3();
+  //     handler.insertFirstUserCardDeck4();
+  //   }
+  //   // else {
+  //   //   print(
+  //   //       'info_supportCard.dart 에서 카드 리스트 불러올때 카드가 있다면 나오는 곳 chkFirstDeck Function');
 
-    // }
-    return true;
-  }
+  //   // }
+  //   return true;
+  // }
   // ---------------- Function END ----------------
 
 } // InfoInventoryBody END

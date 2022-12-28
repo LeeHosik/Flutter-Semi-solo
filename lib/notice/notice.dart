@@ -68,7 +68,7 @@ class _Notice_mainBodyState extends State<Notice_mainBody> {
         ),
       )
       ..loadRequest(Uri.parse("https://$siteName"));
-    print('3');
+    // print('3');
   }
 
   @override
@@ -110,7 +110,7 @@ class _Notice_mainBodyState extends State<Notice_mainBody> {
   snackBarFunction(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('No more to go!'),
+        content: Text('처음화면 입니다'),
         duration: Duration(seconds: 2),
         backgroundColor: Colors.red,
       ),

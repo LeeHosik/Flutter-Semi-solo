@@ -1,10 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
-import 'package:solo_game_project/login/login_static.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:solo_game_project/login/static_user.dart';
+import 'package:solo_game_project/makeChara/makeCharHome.dart';
 
 class Login_main extends StatelessWidget {
   const Login_main({super.key});
@@ -22,22 +23,37 @@ class Login_page extends StatefulWidget {
   State<Login_page> createState() => _Login_pageState();
 }
 
-class _Login_pageState extends State<Login_page> {
+class _Login_pageState extends State<Login_page> with WidgetsBindingObserver {
+  late AppLifecycleState _lastLifeCycleState;
   late List data;
-  late String sendSeq;
-  late String charImg;
-  late TextEditingController user_id;
-  late TextEditingController user_pw;
-  // late var sucess;
+  late List user_login_chr_chk;
+  // late String charImg;
+  late TextEditingController tecUser_id;
+  late TextEditingController tecUser_pw;
+  late String setUser_id;
+  late String setUser_pw;
+  late String setUser_seq;
+  late String setUser_ChrUID;
 
   @override
   void initState() {
-    // TODO: implement initState
+    // TODO: implement initStatesetUser_ChrUID
+
     super.initState();
-    charImg = "";
+    WidgetsBinding.instance.addObserver(this);
+    // charImg = "";
     data = [];
-    user_id = TextEditingController();
-    user_pw = TextEditingController();
+    user_login_chr_chk = [];
+    tecUser_id = TextEditingController();
+    tecUser_pw = TextEditingController();
+    setUser_seq = "";
+    setUser_id = "";
+    setUser_pw = "";
+    setUser_ChrUID = "";
+    _initSharedPreferences();
+    setState(() {
+      //
+    });
   }
 
   @override
@@ -49,7 +65,7 @@ class _Login_pageState extends State<Login_page> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
-              controller: user_id,
+              controller: tecUser_id,
               keyboardType: TextInputType.text,
               decoration: const InputDecoration(
                 hintText: 'Plz Input your ID',
@@ -57,7 +73,7 @@ class _Login_pageState extends State<Login_page> {
               textInputAction: TextInputAction.go,
             ),
             TextField(
-              controller: user_pw,
+              controller: tecUser_pw,
               keyboardType: TextInputType.text,
               decoration: const InputDecoration(
                 hintText: 'Plz Input your PW',
@@ -79,22 +95,13 @@ class _Login_pageState extends State<Login_page> {
                 ElevatedButton(
                   onPressed: () {
                     getJsonDataLoginChk(
-                      user_id.text.trim(),
-                      user_pw.text.trim(),
+                      tecUser_id.text.trim(),
+                      tecUser_pw.text.trim(),
                     );
                   },
                   child: const Text('Login!'),
                 ),
               ],
-            ),
-            ElevatedButton(
-              onPressed: () {
-                testFunctionDesu(
-                  user_id.text.trim(),
-                  user_pw.text.trim(),
-                );
-              },
-              child: const Text('로그인 한 뒤에 캐릭터생성으로 가는 임시버튼'),
             ),
           ],
         ),
@@ -117,30 +124,56 @@ class _Login_pageState extends State<Login_page> {
       ),
     );
 
-    print(response.body);
     List result = dateConvertedJSON['results'];
-    setState(() {
-      data.addAll(result);
-    });
+    data.addAll(result);
 
     if (data.isNotEmpty) {
-      String sendSeq = data[0]['user_seq'];
-      login_static.static_charUID = data[0]['char_UID'];
-
-      Get.back();
-      Get.back();
-      Get.toNamed(
-        '/tabbar',
-        arguments: data[0]['user_seq'],
-      );
-
-      //suceess login
-
+      setUser_pw = data[0]['user_pw'];
+      setUser_seq = data[0]['user_seq'];
+      setUser_id = data[0]['user_id'];
+      getJsonDataLoginDoyouHaveChr(setUser_seq);
     } else {
       _loginFail(context);
     }
     return true;
   } // getJsonDataLoginChk END
+
+//2022-12-28 Hosik
+// login 시 캐릭터 정보가 없으면 듀토리얼로 가서 캐릭터 생성하고 난 뒤에 홈으로 가고 데이터가 있으면 바로 홈으로 가기
+  Future getJsonDataLoginDoyouHaveChr(final input_user_seq) async {
+    var url = Uri.parse(
+        'http://localhost:8080/Flutter/soloGP/Login/after_login_chk_chr.jsp?user_seq=$input_user_seq');
+    var response = await http.get(url);
+    data.clear();
+    var dateConvertedJSON = json.decode(
+      utf8.decode(
+        response.bodyBytes,
+      ),
+    );
+    List result = dateConvertedJSON['results'];
+
+    data.addAll(result);
+
+    if (data.isEmpty) {
+      setUser_ChrUID = "";
+      _initSharedPreferences();
+      Get.to(const makeCharHome());
+    } else {
+      setUser_ChrUID = data[0]['Chr_UID'];
+      print(setUser_ChrUID);
+      user_static.staticUser_chrUID = setUser_ChrUID;
+      print(user_static.staticUser_chrUID);
+      _initSharedPreferences();
+
+      Get.back();
+      Get.back();
+
+      Get.toNamed(
+        '/tabbar',
+      );
+    }
+    return true;
+  } // getJsonDataLoginDoyouHaveChr END
 
   _loginFail(BuildContext context) {
     // 로그인 실패시
@@ -162,43 +195,13 @@ class _Login_pageState extends State<Login_page> {
     );
   } // _showDialog END
 
+  _initSharedPreferences() async {
+    final pref = await SharedPreferences.getInstance();
+    pref.setString('userId', setUser_id);
+    pref.setString('userPw', setUser_pw);
+    pref.setString('userSeq', setUser_seq);
+    pref.setString('user_chrUID', setUser_ChrUID);
+  } //  _initSharedPreferences END
   // --------------------Function END--------------------
 
-// ****************임시 테스트 위한 로그인 한뒤 캐릭생성 바로 가는 펑션 지울 예정 ************************
-
-  Future testFunctionDesu(final input_user_id, final input_user_pw) async {
-    var url = Uri.parse(
-        'http://localhost:8080/Flutter/soloGP/Login/login_chk_query.jsp?user_id=$input_user_id&user_pw=$input_user_pw');
-
-    var response = await http.get(url);
-
-    data.clear();
-    var dateConvertedJSON = json.decode(
-      utf8.decode(
-        response.bodyBytes,
-      ),
-    );
-
-    List result = dateConvertedJSON['results'];
-    setState(() {
-      data.addAll(result);
-    });
-
-    if (data.isNotEmpty) {
-      print(data[0]['user_seq']);
-      login_static.static_user_seq = data[0]['user_seq'];
-      print('스태틱에 들어간 유저 아이디 ${login_static.static_user_seq}');
-      Get.back();
-      Get.back();
-      Get.toNamed('/makeCharHome');
-
-      //suceess login
-
-    } else {
-      _loginFail(context);
-    }
-    return true;
-  } // getJsonDataLoginChk END
-
-  // ****************임시 테스트 위한 로그인 한뒤 캐릭생성 바로 가는 펑션 지울 예정 ************************
 } // END

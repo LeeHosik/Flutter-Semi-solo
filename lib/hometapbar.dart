@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:solo_game_project/Card/CardSQLite/Model/CardSQLite.dart';
+import 'package:solo_game_project/Card/CardSQLite/Model/sqlite_card_model.dart';
 import 'package:solo_game_project/home.dart';
 import 'package:solo_game_project/info.dart';
 import 'package:solo_game_project/shop.dart';
@@ -22,11 +24,19 @@ class HomeTabBody extends StatefulWidget {
 class _HomeTabBodyState extends State<HomeTabBody>
     with SingleTickerProviderStateMixin {
   late TabController tabController;
+  late DatabaseHandler handler;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    handler = DatabaseHandler();
+    handler.initializeDB().whenComplete(() async {
+      setState(() {
+        //handler.queryUserCardDeck();
+      });
+      chkFirstDeck();
+    });
     tabController = TabController(length: 3, vsync: this);
   }
 
@@ -83,5 +93,24 @@ class _HomeTabBodyState extends State<HomeTabBody>
         ),
       ),
     );
+  }
+
+  //2022-12-29 Hosik
+  Future<bool> chkFirstDeck() async {
+    List<SupportCard> chkFirstDeck = await handler.queryUserCardDeck();
+
+    if (chkFirstDeck.isEmpty) {
+      print('have not DATA');
+      handler.insertFirstUserCardDeck1();
+      handler.insertFirstUserCardDeck2();
+      handler.insertFirstUserCardDeck3();
+      handler.insertFirstUserCardDeck4();
+    }
+    // else {
+    //   print(
+    //       'info_supportCard.dart 에서 카드 리스트 불러올때 카드가 있다면 나오는 곳 chkFirstDeck Function');
+
+    // }
+    return true;
   }
 }
