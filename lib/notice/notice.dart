@@ -38,7 +38,8 @@ class _Notice_mainBodyState extends State<Notice_mainBody> {
     super.initState();
     print('1');
     isLoading = true; // for indicator
-    siteName = "m.cafe.naver.com/luchesia";
+    // siteName = "m.cafe.naver.com/luchesia";
+    siteName = "gametora.com/ja/umamusume";
     print('2');
     controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)

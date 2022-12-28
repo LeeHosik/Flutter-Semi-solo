@@ -1,5 +1,5 @@
 import 'package:path/path.dart';
-import 'package:solo_game_project/login_sqlite_db/user_info.dart';
+import 'package:solo_game_project/login/login_sqlite_db/user_info.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DatabaseHandler {
@@ -27,25 +27,23 @@ class DatabaseHandler {
     return result;
   } // insertStudents END
 
-  // Future<int> insertuser_Info(user_Info user_Info) async {
-  //   int result = 0;
+  Future<List<user_Info>> queryUser_Info() async {
+    // DB 설정하기
+    final Database db = await initializeDB();
+    // KEY를 가지고와서 사용해야함.
+    final List<Map<String, Object?>> queryResult =
+        await db.rawQuery('select * from user_Info');
+    return queryResult.map((e) => user_Info.formMap(e)).toList();
+  }
 
-  //   final Database db = await initializeDB();
-  //   print("insertStudents Database's DB $db");
-  //   result = await db.rawInsert(
-  //       'insert into student (UID, user_id, user_pw) value (?,?,?)', [
-  //     user_Info.UID,
-  //     user_Info.user_id,
-  //     user_Info.user_pw,
-  //   ]);
-  //   return result;
-  // } // insertStudents END
+  Future<int> insertuser_Info(user_Info user_Info) async {
+    int result = 0;
+    final Database db = await initializeDB();
+    print("insertStudents Database's DB $db");
+    result = await db.rawInsert(
+        'insert into user_Info(UID, user_id, user_pw) values(?, ?, ?)',
+        [user_Info.UID, user_Info.user_id, user_Info.user_pw]);
 
-  // Future<List<user_Info>> queryStudents() async {
-  //   final Database db = await initializeDB();
-  //   final List<Map<String, Object?>> queryResult =
-  //       await db.rawQuery('select * from user_Info');
-  //   return queryResult.map((e) => user_Info.fromMap(e)).toList();
-  // } // queryStudent END
-
+    return result;
+  }
 } // DatabaseHandler END

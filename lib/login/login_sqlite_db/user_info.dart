@@ -1,9 +1,7 @@
-import 'dart:ffi';
-
 // sqlite 에서 스타트시 자동 로그인 할때 필요한 녀석
 // 2022-12-25 Hosik
 class user_Info {
-  final Int? UID;
+  final int? UID;
   final String user_id;
   final String user_pw;
 
@@ -13,7 +11,7 @@ class user_Info {
     required this.user_pw,
   });
 
-  user_Info.fromMap(Map<String, dynamic> res) // 생성자 만들기
+  user_Info.formMap(Map<String, dynamic> res)
       : UID = res['UID'],
         user_id = res['user_id'],
         user_pw = res['user_pw'];

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:solo_game_project/Card/CardSQLite/Model/CardSQLite.dart';
 import 'package:solo_game_project/hometapbar.dart';
 import 'package:solo_game_project/login/login_static.dart';
 import 'package:solo_game_project/notice/notice.dart';
@@ -34,7 +35,7 @@ class _HomeBodyState extends State<HomeBody> {
     // TODO: implement initState
     super.initState();
     character =
-        "https://i.pinimg.com/originals/6a/e4/e1/6ae4e194ffef725f03e730562b546fef.png";
+        "https://i.pinimg.com/originals/fa/6a/a8/fa6aa8b9f02691e42df56f1678e795fc.gif";
 
     print(getvalue);
     getJsonDataGetUserCharInit(getvalue);
@@ -61,7 +62,6 @@ class _HomeBodyState extends State<HomeBody> {
             left: Mwidth * 0.25,
             child: SizedBox(
               child: Image.network(
-                // 'https://github.com/LeeHosik/Flutter-Study/blob/main/00%20backup/study/images/Aston%20Machan.png?raw=true',
                 character,
                 height: MHeight * 0.5,
                 width: Mwidth * 0.5,
@@ -141,11 +141,30 @@ class _HomeBodyState extends State<HomeBody> {
               ),
             ),
           ),
+          // Positioned(
+          //   top: (MHeight - 55) * 0.5,
+          //   left: Mwidth * 0.205,
+          //   child: SizedBox(
+          //     child: SizedBox(
+          //       width: Mwidth * 0.35,
+          //       height: MHeight * 0.15,
+          //       child: ElevatedButton(
+          //         onPressed: () {
+          //           print('SQLIie Trunate button Clicked !');
+          //           DatabaseHandler handl
+          //         },
+          //         child: const Text(
+          //           '임시 SQLite Trunate 버튼  ',
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
         ],
-        //     ),
-        //   ],
-        // ),
       ),
+      //     ),
+      //   ],
+      // ),
     );
   }
 

@@ -9,4 +9,5 @@ class card_static {
       "https://upload3.inven.co.kr/upload/2022/07/20/bbs/i15972663655.png";
 
   static String card_category = "";
+  static int cardDeckCategory = 0;
 }

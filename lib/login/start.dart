@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:solo_game_project/Login/login.dart';
-import 'package:solo_game_project/login_sqlite_db/database_handler.dart';
-import 'package:solo_game_project/login_sqlite_db/user_info.dart';
+import 'package:solo_game_project/hometapbar.dart';
+import 'package:solo_game_project/login/login_sqlite_db/database_handler.dart';
+import 'package:solo_game_project/login/login_sqlite_db/user_info.dart';
 
 class GameStart extends StatelessWidget {
   const GameStart({super.key});
@@ -22,49 +24,29 @@ class StartBody extends StatefulWidget {
 }
 
 class _StartBodyState extends State<StartBody> {
-  //with WidgetsBindingObserver {
-  // late DatabaseHandler handler;
-  // late AppLifecycleState _lastLifeCycleState;
-  // late TextEditingController userIdController;
-  // late TextEditingController userPwController;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    // handler = DatabaseHandler();
-    // handler.initializeDB().whenComplete(() async {
-    // await loginchk();
-    // print('home chkloginUserInfo access! ${loginchk()}');
-    // });
-    // WidgetsBinding.instance.addObserver(this);
-    // userIdController = TextEditingController();
-    // userPwController = TextEditingController();
-
-    // _initSharedPreferences(); // SharedPreference 초기화
-  }
-
   @override
   Widget build(BuildContext context) {
-    double MHeight = MediaQuery.of(context).size.height;
-    double Mwidth = MediaQuery.of(context).size.width;
+    // double MHeight = MediaQuery.of(context).size.height;
+    // double Mwidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         title: const Text(
           'Start PAge',
         ),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () => GotoLogin(),
-              child: const Text(
-                'Go to Login',
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () => GotoLogin(),
+                child: const Text(
+                  'Go to Login',
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -80,13 +62,23 @@ class _StartBodyState extends State<StartBody> {
       barrierDismissible: true, // 바깥 영역 터치시 닫을지 여부
       builder: (BuildContext context) {
         return AlertDialog(
-          content: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.5,
-            height: MediaQuery.of(context).size.height * 0.4,
-            child: const Login_main(),
+          content: SingleChildScrollView(
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.5,
+              height: MediaQuery.of(context).size.height * 0.4,
+              child: const Login_main(),
+            ),
           ),
         );
       },
+    );
+  }
+
+  loginsucess() {
+// const HomeTab();
+    Get.toNamed(
+      '/tabbar',
+      // arguments: data[0]['user_seq'],
     );
   }
 

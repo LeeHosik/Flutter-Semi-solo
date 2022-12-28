@@ -185,7 +185,8 @@ class _Login_pageState extends State<Login_page> {
     });
 
     if (data.isNotEmpty) {
-      login_static.static_user_seq = data[0];
+      print(data[0]['user_seq']);
+      login_static.static_user_seq = data[0]['user_seq'];
       print('스태틱에 들어간 유저 아이디 ${login_static.static_user_seq}');
       Get.back();
       Get.back();
