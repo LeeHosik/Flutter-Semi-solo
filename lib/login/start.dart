@@ -68,9 +68,15 @@ class _StartBodyState extends State<StartBody> {
               ),
             ),
             ElevatedButton(
-              onPressed: () => Get.to(SignInDemo()),
-              child: Text(
-                'google',
+              onPressed: () => Get.to(const SampleScreen()),
+              child: const Text(
+                'XXXXXXXX google just iso and XXXXXXXX',
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () => Get.to(const SampleScreen()),
+              child: const Text(
+                'google Login(Feat.Firebase)',
               ),
             ),
           ],
